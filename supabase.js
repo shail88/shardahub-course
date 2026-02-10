@@ -1,16 +1,18 @@
-/ 1. PROJECT CONFIGURATION
-// Be careful: URL must start with https:// and end in .supabase.co
+// 1. PROJECT CONFIGURATION
 const SB_URL = 'https://lkgqzieviqtrsoeffbnq.supabase.co'; 
 const SB_KEY = 'sb_publishable_so26fUecpMp_T3vyzJJnXQ_T0wEkOyU';
 
-// 2. INITIALIZE CLIENT (The CDN Method)
-// We use window.supabase because the CDN script creates a global 'supabase' object
+// 2. INITIALIZE CLIENT
+// Use window.supabase from the CDN to create the client
 const { createClient } = window.supabase;
-const supabase = createClient(SB_URL, SB_KEY);
+
+// We name it _supabase and attach to window so script.js can use it
+window.supabase = createClient(SB_URL, SB_KEY);
+const _supabase = window.supabase; 
 
 // --- AUTH HELPERS ---
 async function signUp(email, password, fullName) {
-    const { data, error } = await supabase.auth.signUp({
+    const { data, error } = await _supabase.auth.signUp({
         email: email,
         password: password,
         options: {
@@ -21,7 +23,7 @@ async function signUp(email, password, fullName) {
 }
 
 async function signIn(email, password) {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await _supabase.auth.signInWithPassword({
         email: email,
         password: password
     });
@@ -29,22 +31,21 @@ async function signIn(email, password) {
 }
 
 async function signOut() {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await _supabase.auth.signOut();
     return { error };
 }
 
 // --- DATA HELPERS ---
 async function fetchCourses() {
-    // IMPORTANT: Make sure you have a table named 'courses' in Supabase
-    const { data, error } = await supabase.from('courses').select('*');
+    const { data, error } = await _supabase.from('courses').select('*');
     return { data, error };
 }
 
 async function fetchEnrollments() {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await _supabase.auth.getUser();
     if (!user) return { data: [], error: 'Not logged in' };
 
-    const { data, error } = await supabase
+    const { data, error } = await _supabase
         .from('enrollments')
         .select(`
             *,
@@ -57,10 +58,10 @@ async function fetchEnrollments() {
 }
 
 async function enrollUser(courseId) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await _supabase.auth.getUser();
     if (!user) return { error: 'Not logged in' };
 
-    const { data, error } = await supabase
+    const { data, error } = await _supabase
         .from('enrollments')
         .insert([{ user_id: user.id, course_id: courseId }]);
 
@@ -68,16 +69,15 @@ async function enrollUser(courseId) {
 }
 
 async function checkEnrollment(courseId) {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await _supabase.auth.getUser();
     if (!user) return false;
 
-    const { data, error } = await supabase
+    const { data, error } = await _supabase
         .from('enrollments')
         .select('id')
         .eq('user_id', user.id)
         .eq('course_id', courseId)
-        .maybeSingle(); // maybeSingle is safer than .single() if no data exists
+        .maybeSingle(); 
 
     return !!data; 
 }
-
