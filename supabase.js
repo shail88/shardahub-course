@@ -80,3 +80,4 @@ async function checkEnrollment(courseId) {
 
     return !!data; 
 }
+
