@@ -1,4 +1,4 @@
-// 1. PROJECT CONFIGURATION
+
 const SB_URL = 'https:/lkgqzieviqtrsoeffbnq.supabase.co'; 
 const SB_KEY = 'sb_publishable_so26fUecpMp_T3vyzJJnXQ_T0wEkOyU';
 
@@ -81,4 +81,5 @@ async function checkEnrollment(courseId) {
 
     return !!data; 
 }
+
 
