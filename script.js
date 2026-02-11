@@ -102,6 +102,38 @@ function setupFilters() {
         });
     });
 }
+// script.js - Final Logic
+
+// Triggered by the "Create Account" button
+async function handleSignUp() {
+    const name = document.getElementById('signupName').value;
+    const email = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+
+    const { data, error } = await signUp(email, password, name);
+
+    if (error) {
+        alert("Signup Failed: " + error.message);
+    } else {
+        alert("Success! User created. Please check your email.");
+        window.location.href = 'login.html';
+    }
+}
+
+// Triggered by the "Sign In" button
+async function handleLogin() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    const { data, error } = await signIn(email, password);
+
+    if (error) {
+        alert("Login Error: " + error.message);
+    } else {
+        alert("Welcome Back!");
+        window.location.href = 'dashboard.html';
+    }
+}
 
 // --- DETAILS PAGE ---
 async function loadCourseDetailsDB() {
@@ -317,3 +349,4 @@ async function startPayment() {
     };
     new Razorpay(options).open();
 }
+
