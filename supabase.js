@@ -84,6 +84,15 @@ async function checkEnrollment(courseId) {
 // supabase.js - Production Connection
 const SB_URL = 'https://lkgqzieviqtrsoeffbnq.supabase.co';
 const SB_KEY = 'sb_publishable_so26fUecpMp_T3vyzJJnXQ_T0wEkOyU';
+const initializeSupabase = () => {
+    if (window.supabase) {
+        const { createClient } = window.supabase;
+        window._supabase = createClient(SB_URL, SB_KEY);
+    } else {
+        console.error("Supabase library not loaded!");
+    }
+};
+initializeSupabase();
 
 // Initialize client from CDN global
 const supabase = window.supabase.createClient(SB_URL, SB_KEY);
@@ -115,6 +124,7 @@ async function signOut() {
 async function fetchCourses() {
   return await _supabase.from('courses').select('*');
 }
+
 
 
 
