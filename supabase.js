@@ -82,48 +82,40 @@ async function checkEnrollment(courseId) {
     return !!data; 
 } */
 // supabase.js - Production Connection
-const SB_URL = 'https://lkgqzieviqtrsoeffbnq.supabase.co'; 
+const SB_URL = 'https://lkgqzieviqtrsoeffbnq.supabase.co';
 const SB_KEY = 'sb_publishable_so26fUecpMp_T3vyzJJnXQ_T0wEkOyU';
 
-// 1. Initialize from CDN global object
-const { createClient } = window.supabase;
-window.supabase = createClient(SB_URL, SB_KEY);
-const _supabase = window.supabase; 
+// Initialize client from CDN global
+const supabase = window.supabase.createClient(SB_URL, SB_KEY);
+
+// Expose globally
+window._supabase = supabase;
 
 // --- AUTH HELPERS ---
 
-// SIGN UP: Use this for your Register page
 async function signUp(email, password, fullName) {
-    const { data, error } = await _supabase.auth.signUp({ 
-        email, 
-        password, 
-        options: { data: { full_name: fullName } } 
-    });
-    return { data, error };
+  return await _supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: fullName } }
+  });
 }
 
-// SIGN IN: Use this for your Login page
 async function signIn(email, password) {
-    const { data, error } = await _supabase.auth.signInWithPassword({
-        email,
-        password
-    });
-    return { data, error };
+  return await _supabase.auth.signInWithPassword({
+    email,
+    password
+  });
 }
 
-// SIGN OUT
 async function signOut() {
-    const { error } = await _supabase.auth.signOut();
-    return { error };
+  return await _supabase.auth.signOut();
 }
 
-// --- DATA HELPERS ---
-
-// GET COURSES: Use this for your home page
 async function fetchCourses() {
-    const { data, error } = await _supabase.from('courses').select('*');
-    return { data, error };
+  return await _supabase.from('courses').select('*');
 }
+
 
 
 
